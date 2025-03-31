@@ -4,10 +4,12 @@ import { ITransformedWeather } from "./interfaces/ITransformedWeather";
 import { transformWeather } from "./utils/transformWeather/transformWeather";
 import { WeatherCard } from "./components/WeatherCard/WeatherCard";
 import styles from './App.module.scss';
+import { useDebounce } from "./hooks/useDebounce";
 
 export const App = () => {
   const [city, setCity] = useState('London');
-  const { data, error, isLoading } = useGetWeatherByCityQuery(city);
+  const debouncedCity = useDebounce(city, 1500);
+  const { data, error, isLoading } = useGetWeatherByCityQuery(debouncedCity);
 
   const transformedWeatherData: ITransformedWeather | null = data ? transformWeather(data) : null;
 
