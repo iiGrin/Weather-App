@@ -1,15 +1,21 @@
 import { useState } from "react";
 import { useGetWeatherByCityQuery } from "./api/weatherApi";
+import { ITransformedWeather } from "./interfaces/ITransformedWeather";
+import { transformWeather } from "./utils/transformWeather/transformWeather";
+import { WeatherCard } from "./components/WeatherCard/WeatherCard";
+import styles from './App.module.scss';
 
-const App: React.FC = () => {
+export const App = () => {
   const [city, setCity] = useState('London');
   const { data, error, isLoading } = useGetWeatherByCityQuery(city);
+
+  const transformedWeatherData: ITransformedWeather | null = data ? transformWeather(data) : null;
 
   console.log('Weather Data:', data);
   console.log('Error:', error);
 
   return (
-    <div>
+    <div className={styles.app}>
       <h1>Weather App</h1>
       <input
         type="text"
@@ -19,9 +25,7 @@ const App: React.FC = () => {
       />
       {isLoading && <p>Loading...</p>}
       {error && <p>Error loading weather data</p>}
-      {data && <p>Check console for weather data!</p>}
+      {transformedWeatherData && <WeatherCard data={transformedWeatherData} />}
     </div>
   );
 };
-
-export default App;
